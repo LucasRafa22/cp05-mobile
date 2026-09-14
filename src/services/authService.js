@@ -4,6 +4,7 @@ import {
   signOut,
   sendPasswordResetEmail,
   deleteUser,
+  updateProfile,
 } from 'firebase/auth';
 
 import { auth } from '../config/firebase';
@@ -52,13 +53,17 @@ export function getAuthErrorMessage(error) {
 /**
  * Cadastro de usuário no Firebase Authentication.
  */
-export async function registerUser(email, password) {
+export async function registerUser(nome, email, password) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+
+    await updateProfile(userCredential.user, {
+      displayName: nome,
+    });
 
     return {
       success: true,

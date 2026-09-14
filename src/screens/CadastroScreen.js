@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -26,7 +25,7 @@ export default function CadastroScreen({ navigation }) {
     const nomeTratado = nome.trim();
     const emailTratado = email.trim();
 
-    // Nome
+    // Verificar nome
     if (!nomeTratado) {
       Alert.alert(
         'Atenção',
@@ -35,7 +34,7 @@ export default function CadastroScreen({ navigation }) {
       return;
     }
 
-    // E-mail
+    // Verificar e-mail
     if (!emailTratado) {
       Alert.alert(
         'Atenção',
@@ -44,7 +43,7 @@ export default function CadastroScreen({ navigation }) {
       return;
     }
 
-    // Validação do e-mail
+    // Validar formato do e-mail
     const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailValido.test(emailTratado)) {
@@ -55,7 +54,7 @@ export default function CadastroScreen({ navigation }) {
       return;
     }
 
-    // Senha
+    // Verificar senha
     if (!senha) {
       Alert.alert(
         'Atenção',
@@ -64,6 +63,7 @@ export default function CadastroScreen({ navigation }) {
       return;
     }
 
+    // Firebase exige no mínimo 6 caracteres
     if (senha.length < 6) {
       Alert.alert(
         'Senha inválida',
@@ -72,7 +72,7 @@ export default function CadastroScreen({ navigation }) {
       return;
     }
 
-    // Confirmação da senha
+    // Verificar confirmação da senha
     if (!confirmarSenha) {
       Alert.alert(
         'Atenção',
@@ -81,6 +81,7 @@ export default function CadastroScreen({ navigation }) {
       return;
     }
 
+    // Comparar senhas
     if (senha !== confirmarSenha) {
       Alert.alert(
         'Senhas diferentes',
@@ -92,12 +93,14 @@ export default function CadastroScreen({ navigation }) {
     setLoading(true);
 
     const result = await registerUser(
+      nomeTratado,
       emailTratado,
       senha
     );
 
     setLoading(false);
 
+    // Cadastro com erro
     if (!result.success) {
       Alert.alert(
         'Erro no cadastro',
@@ -109,14 +112,30 @@ export default function CadastroScreen({ navigation }) {
     /*
       IMPORTANTE:
 
-      Não usamos navigation.navigate('Login') aqui.
+      Não usamos:
 
-      O Firebase autentica o usuário automaticamente
-      após o cadastro.
+      navigation.navigate('Login');
 
-      O onAuthStateChanged() do App.js detecta isso
-      e o StackRoutes muda automaticamente para
-      a área autenticada.
+      Depois do cadastro, o Firebase Authentication
+      autentica o usuário automaticamente.
+
+      O AppNavigation.js detecta a alteração através
+      do onAuthStateChanged() e troca automaticamente
+      o AuthStack pelo UserStack.
+
+      Fluxo:
+
+      Cadastro
+          ↓
+      Firebase Authentication
+          ↓
+      usuário autenticado
+          ↓
+      AppNavigation
+          ↓
+      UserStack
+          ↓
+      Home
     */
 
     Alert.alert(
@@ -152,6 +171,8 @@ export default function CadastroScreen({ navigation }) {
           Cadastre-se no Pet Care
         </Text>
 
+        {/* NOME */}
+
         <Text style={styles.label}>
           Nome
         </Text>
@@ -161,8 +182,11 @@ export default function CadastroScreen({ navigation }) {
           placeholder="Digite seu nome"
           value={nome}
           onChangeText={setNome}
+          autoCapitalize="words"
           editable={!loading}
         />
+
+        {/* E-MAIL */}
 
         <Text style={styles.label}>
           E-mail
@@ -179,6 +203,8 @@ export default function CadastroScreen({ navigation }) {
           editable={!loading}
         />
 
+        {/* SENHA */}
+
         <Text style={styles.label}>
           Senha
         </Text>
@@ -192,6 +218,8 @@ export default function CadastroScreen({ navigation }) {
           editable={!loading}
         />
 
+        {/* CONFIRMAR SENHA */}
+
         <Text style={styles.label}>
           Confirmar senha
         </Text>
@@ -204,6 +232,8 @@ export default function CadastroScreen({ navigation }) {
           secureTextEntry
           editable={!loading}
         />
+
+        {/* BOTÃO CADASTRO */}
 
         <TouchableOpacity
           style={[
@@ -222,9 +252,13 @@ export default function CadastroScreen({ navigation }) {
           )}
         </TouchableOpacity>
 
+        {/* VOLTAR PARA LOGIN */}
+
         <TouchableOpacity
           style={styles.linkButton}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() =>
+            navigation.navigate('Login')
+          }
           disabled={loading}
         >
           <Text style={styles.linkText}>

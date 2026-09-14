@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -23,6 +22,7 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     const emailTratado = email.trim();
 
+    // Verificar e-mail vazio
     if (!emailTratado) {
       Alert.alert(
         'Atenção',
@@ -31,6 +31,7 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
+    // Verificar senha vazia
     if (!senha) {
       Alert.alert(
         'Atenção',
@@ -39,6 +40,7 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
+    // Validar formato do e-mail
     const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailValido.test(emailTratado)) {
@@ -58,6 +60,7 @@ export default function LoginScreen({ navigation }) {
 
     setLoading(false);
 
+    // Caso o login dê erro
     if (!result.success) {
       Alert.alert(
         'Erro no login',
@@ -67,12 +70,28 @@ export default function LoginScreen({ navigation }) {
     }
 
     /*
-      NÃO usamos navigation.replace('Home') aqui.
+      NÃO usamos:
+
+      navigation.replace('Home');
 
       O Firebase altera o estado de autenticação.
-      O onAuthStateChanged no App.js detecta o usuário
-      e o StackRoutes automaticamente passa a mostrar
-      as telas autenticadas.
+      O onAuthStateChanged() do AppNavigation.js
+      detecta automaticamente que o usuário está
+      autenticado e muda para o UserStack.
+
+      Fluxo:
+
+      Login
+        ↓
+      Firebase Authentication
+        ↓
+      usuário autenticado
+        ↓
+      AppNavigation
+        ↓
+      UserStack
+        ↓
+      Home
     */
   };
 
@@ -89,6 +108,7 @@ export default function LoginScreen({ navigation }) {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
+
         <Text style={styles.title}>
           Pet Care
         </Text>
@@ -96,6 +116,8 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.subtitle}>
           Entre na sua conta
         </Text>
+
+        {/* E-MAIL */}
 
         <Text style={styles.label}>
           E-mail
@@ -112,6 +134,8 @@ export default function LoginScreen({ navigation }) {
           editable={!loading}
         />
 
+        {/* SENHA */}
+
         <Text style={styles.label}>
           Senha
         </Text>
@@ -124,6 +148,8 @@ export default function LoginScreen({ navigation }) {
           secureTextEntry
           editable={!loading}
         />
+
+        {/* BOTÃO LOGIN */}
 
         <TouchableOpacity
           style={[
@@ -142,6 +168,8 @@ export default function LoginScreen({ navigation }) {
           )}
         </TouchableOpacity>
 
+        {/* RECUPERAÇÃO DE SENHA */}
+
         <TouchableOpacity
           style={styles.linkButton}
           onPress={() =>
@@ -153,6 +181,8 @@ export default function LoginScreen({ navigation }) {
             Esqueci minha senha
           </Text>
         </TouchableOpacity>
+
+        {/* CADASTRO */}
 
         <TouchableOpacity
           style={styles.linkButton}
