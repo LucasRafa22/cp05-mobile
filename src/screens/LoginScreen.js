@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import {
+  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -22,25 +23,16 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     const emailTratado = email.trim();
 
-    // Verificar e-mail vazio
     if (!emailTratado) {
-      Alert.alert(
-        'Atenção',
-        'Digite seu e-mail.'
-      );
+      Alert.alert('Atenção', 'Digite seu e-mail.');
       return;
     }
 
-    // Verificar senha vazia
     if (!senha) {
-      Alert.alert(
-        'Atenção',
-        'Digite sua senha.'
-      );
+      Alert.alert('Atenção', 'Digite sua senha.');
       return;
     }
 
-    // Validar formato do e-mail
     const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailValido.test(emailTratado)) {
@@ -60,7 +52,6 @@ export default function LoginScreen({ navigation }) {
 
     setLoading(false);
 
-    // Caso o login dê erro
     if (!result.success) {
       Alert.alert(
         'Erro no login',
@@ -69,30 +60,8 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
-    /*
-      NÃO usamos:
-
-      navigation.replace('Home');
-
-      O Firebase altera o estado de autenticação.
-      O onAuthStateChanged() do AppNavigation.js
-      detecta automaticamente que o usuário está
-      autenticado e muda para o UserStack.
-
-      Fluxo:
-
-      Login
-        ↓
-      Firebase Authentication
-        ↓
-      usuário autenticado
-        ↓
-      AppNavigation
-        ↓
-      UserStack
-        ↓
-      Home
-    */
+    // O AppNavigation detecta automaticamente
+    // que o usuário foi autenticado.
   };
 
   return (
@@ -108,16 +77,17 @@ export default function LoginScreen({ navigation }) {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
+        <View style={styles.header}>
+          <Text style={styles.logo}>🐾</Text>
 
-        <Text style={styles.title}>
-          Pet Care
-        </Text>
+          <Text style={styles.title}>
+            Pet Care
+          </Text>
 
-        <Text style={styles.subtitle}>
-          Entre na sua conta
-        </Text>
-
-        {/* E-MAIL */}
+          <Text style={styles.subtitle}>
+            Entre na sua conta
+          </Text>
+        </View>
 
         <Text style={styles.label}>
           E-mail
@@ -126,6 +96,7 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.input}
           placeholder="Digite seu e-mail"
+          placeholderTextColor="#999"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -134,8 +105,6 @@ export default function LoginScreen({ navigation }) {
           editable={!loading}
         />
 
-        {/* SENHA */}
-
         <Text style={styles.label}>
           Senha
         </Text>
@@ -143,13 +112,12 @@ export default function LoginScreen({ navigation }) {
         <TextInput
           style={styles.input}
           placeholder="Digite sua senha"
+          placeholderTextColor="#999"
           value={senha}
           onChangeText={setSenha}
           secureTextEntry
           editable={!loading}
         />
-
-        {/* BOTÃO LOGIN */}
 
         <TouchableOpacity
           style={[
@@ -168,8 +136,6 @@ export default function LoginScreen({ navigation }) {
           )}
         </TouchableOpacity>
 
-        {/* RECUPERAÇÃO DE SENHA */}
-
         <TouchableOpacity
           style={styles.linkButton}
           onPress={() =>
@@ -182,8 +148,6 @@ export default function LoginScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
 
-        {/* CADASTRO */}
-
         <TouchableOpacity
           style={styles.linkButton}
           onPress={() =>
@@ -195,7 +159,6 @@ export default function LoginScreen({ navigation }) {
             Ainda não tenho uma conta
           </Text>
         </TouchableOpacity>
-
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -204,7 +167,7 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
   },
 
   content: {
@@ -214,32 +177,41 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
 
+  header: {
+    alignItems: 'center',
+    marginBottom: 35,
+  },
+
+  logo: {
+    fontSize: 50,
+    marginBottom: 5,
+  },
+
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
 
   subtitle: {
     fontSize: 17,
     color: '#666',
-    textAlign: 'center',
-    marginBottom: 35,
   },
 
   label: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#222',
     marginBottom: 8,
   },
 
   input: {
+    backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
     paddingHorizontal: 15,
-    paddingVertical: 13,
+    paddingVertical: 14,
     fontSize: 16,
     marginBottom: 20,
   },

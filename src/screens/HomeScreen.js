@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   View,
   Text,
@@ -10,22 +8,35 @@ import {
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Bem-vindo ao Pet Care!
-      </Text>
-
-      <Text style={styles.subtitle}>
-        Você está autenticado.
-      </Text>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Perfil')}
-      >
-        <Text style={styles.buttonText}>
-          Meu Perfil
+      <View style={styles.card}>
+        <Text style={styles.logo}>
+          🐾
         </Text>
-      </TouchableOpacity>
+
+        <Text style={styles.title}>
+          Bem-vindo ao Pet Care!
+        </Text>
+
+        <Text style={styles.subtitle}>
+          Você está autenticado.
+        </Text>
+
+        <Text style={styles.description}>
+          Gerencie sua conta e acesse seus dados
+          com segurança.
+        </Text>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() =>
+            navigation.navigate('Perfil')
+          }
+        >
+          <Text style={styles.buttonText}>
+            Meu Perfil
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -33,22 +44,50 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
     backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    padding: 20,
+  },
+
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 30,
+    alignItems: 'center',
+    elevation: 3,
+
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+
+  logo: {
+    fontSize: 55,
+    marginBottom: 15,
   },
 
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
     textAlign: 'center',
+    marginBottom: 10,
   },
 
   subtitle: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 17,
+    color: '#555',
+    marginBottom: 10,
+  },
+
+  description: {
+    fontSize: 15,
+    color: '#777',
+    textAlign: 'center',
+    lineHeight: 22,
     marginBottom: 30,
   },
 
@@ -56,8 +95,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     borderRadius: 10,
     paddingVertical: 15,
-    paddingHorizontal: 40,
-    alignItems: 'center',
+    paddingHorizontal: 50,
   },
 
   buttonText: {
