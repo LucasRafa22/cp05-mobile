@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import LoginScreen from '../screens/LoginScreen';
 import CadastroScreen from '../screens/CadastroScreen';
+import EsqueciSenhaScreen from '../screens/EsqueciSenhaScreen';
 import PerfilScreen from '../screens/PerfilScreen';
 import HomeScreen from '../screens/HomeScreen';
 
@@ -10,6 +11,7 @@ const Stack = createNativeStackNavigator();
 export default function StackRoutes() {
   return (
     <Stack.Navigator initialRouteName="Login">
+
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -23,6 +25,12 @@ export default function StackRoutes() {
       />
 
       <Stack.Screen
+        name="EsqueciSenha"
+        component={EsqueciSenhaScreen}
+        options={{ title: 'Recuperar senha' }}
+      />
+
+      <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ title: 'Home' }}
@@ -33,6 +41,7 @@ export default function StackRoutes() {
         component={PerfilScreen}
         options={{ title: 'Meu Perfil' }}
       />
+
     </Stack.Navigator>
   );
 }
