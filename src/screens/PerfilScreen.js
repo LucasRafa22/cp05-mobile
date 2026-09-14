@@ -10,15 +10,23 @@ import {
 } from 'react-native';
 
 import { auth } from '../config/firebase';
-import { logoutUser } from '../services/authService';
+import {
+  logoutUser,
+  deleteAccount,
+} from '../services/authService';
 
 export default function PerfilScreen() {
-  const [loading, setLoading] = useState(false);
+  const [loadingLogout, setLoadingLogout] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
 
   const user = auth.currentUser;
 
   const nome = user?.displayName || 'Usuário';
   const email = user?.email || 'E-mail não informado';
+
+  // =========================
+  // LOGOUT
+  // =========================
 
   const handleLogout = () => {
     Alert.alert(
@@ -39,24 +47,29 @@ export default function PerfilScreen() {
   };
 
   const realizarLogout = async () => {
-    setLoading(true);
+    setLoadingLogout(true);
 
     const result = await logoutUser();
 
-    setLoading(false);
+    setLoadingLogout(false);
 
     if (!result.success) {
       Alert.alert(
         'Erro ao sair',
         result.message
       );
+
       return;
     }
 
-    // Não usamos navigation.navigate('Login').
-    // O AppNavigation detectará que auth.currentUser
-    // ficou null e voltará automaticamente para o AuthStack.
+    // Não fazemos navigation.navigate('Login').
+    // O AppNavigation detecta que o usuário saiu
+    // e troca automaticamente para o AuthStack.
   };
+
+  // =========================
+  // EXCLUIR CONTA
+  // =========================
 
   const handleDeleteAccount = () => {
     Alert.alert(
@@ -70,16 +83,47 @@ export default function PerfilScreen() {
         {
           text: 'Excluir',
           style: 'destructive',
-          onPress: async () => {
-            // Será implementado na FASE 8.
-          },
+          onPress: realizarExclusao,
         },
       ]
     );
   };
 
+  const realizarExclusao = async () => {
+    setLoadingDelete(true);
+
+    const result = await deleteAccount();
+
+    setLoadingDelete(false);
+
+    if (!result.success) {
+      Alert.alert(
+        'Não foi possível excluir a conta',
+        result.message
+      );
+
+      return;
+    }
+
+    Alert.alert(
+      'Conta excluída',
+      'Sua conta foi excluída com sucesso.',
+      [
+        {
+          text: 'OK',
+        },
+      ]
+    );
+
+    // Não usamos navigation.navigate('Login').
+    // Após deleteUser(), o Firebase altera o estado
+    // de autenticação e o AppNavigation volta
+    // automaticamente para o Login.
+  };
+
   return (
     <View style={styles.container}>
+      {/* PERFIL */}
       <View style={styles.profileCard}>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
@@ -110,16 +154,19 @@ export default function PerfilScreen() {
         </View>
       </View>
 
+      {/* BOTÕES */}
       <View style={styles.buttonsContainer}>
+        {/* LOGOUT */}
         <TouchableOpacity
           style={[
             styles.logoutButton,
-            loading && styles.buttonDisabled,
+            (loadingLogout || loadingDelete) &&
+              styles.buttonDisabled,
           ]}
           onPress={handleLogout}
-          disabled={loading}
+          disabled={loadingLogout || loadingDelete}
         >
-          {loading ? (
+          {loadingLogout ? (
             <ActivityIndicator color="#fff" />
           ) : (
             <Text style={styles.logoutButtonText}>
@@ -128,17 +175,23 @@ export default function PerfilScreen() {
           )}
         </TouchableOpacity>
 
+        {/* EXCLUIR CONTA */}
         <TouchableOpacity
           style={[
             styles.deleteButton,
-            loading && styles.buttonDisabled,
+            (loadingLogout || loadingDelete) &&
+              styles.buttonDisabled,
           ]}
           onPress={handleDeleteAccount}
-          disabled={loading}
+          disabled={loadingLogout || loadingDelete}
         >
-          <Text style={styles.deleteButtonText}>
-            Excluir conta
-          </Text>
+          {loadingDelete ? (
+            <ActivityIndicator />
+          ) : (
+            <Text style={styles.deleteButtonText}>
+              Excluir conta
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>
@@ -157,7 +210,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 25,
     alignItems: 'center',
+
     elevation: 3,
+
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -172,8 +227,10 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     backgroundColor: '#007AFF',
+
     justifyContent: 'center',
     alignItems: 'center',
+
     marginBottom: 15,
   },
 
@@ -213,9 +270,12 @@ const styles = StyleSheet.create({
   logoutButton: {
     backgroundColor: '#007AFF',
     borderRadius: 10,
+
     paddingVertical: 15,
     paddingHorizontal: 30,
+
     alignItems: 'center',
+
     marginBottom: 15,
   },
 
@@ -227,11 +287,15 @@ const styles = StyleSheet.create({
 
   deleteButton: {
     backgroundColor: '#fff',
+
     borderWidth: 1,
     borderColor: '#d32f2f',
+
     borderRadius: 10,
+
     paddingVertical: 15,
     paddingHorizontal: 30,
+
     alignItems: 'center',
   },
 
