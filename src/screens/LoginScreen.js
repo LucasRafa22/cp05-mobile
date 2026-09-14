@@ -13,15 +13,12 @@ import {
 } from 'react-native';
 
 import {
-  registerUser,
+  loginUser,
 } from '../services/authService';
 
-export default function CadastroScreen({ navigation }) {
-  const [nome, setNome] = useState('');
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [confirmarSenha, setConfirmarSenha] = useState('');
-
   const [loading, setLoading] = useState(false);
 
   function validarEmail(email) {
@@ -29,14 +26,8 @@ export default function CadastroScreen({ navigation }) {
     return regex.test(email);
   }
 
-  async function handleCadastro() {
-    const nomeTratado = nome.trim();
+  async function handleLogin() {
     const emailTratado = email.trim().toLowerCase();
-
-    if (!nomeTratado) {
-      Alert.alert('Atenção', 'Informe seu nome.');
-      return;
-    }
 
     if (!emailTratado) {
       Alert.alert('Atenção', 'Informe seu e-mail.');
@@ -49,55 +40,33 @@ export default function CadastroScreen({ navigation }) {
     }
 
     if (!senha) {
-      Alert.alert('Atenção', 'Informe uma senha.');
-      return;
-    }
-
-    if (senha.length < 6) {
-      Alert.alert(
-        'Atenção',
-        'A senha deve ter pelo menos 6 caracteres.'
-      );
-      return;
-    }
-
-    if (!confirmarSenha) {
-      Alert.alert('Atenção', 'Confirme sua senha.');
-      return;
-    }
-
-    if (senha !== confirmarSenha) {
-      Alert.alert('Atenção', 'As senhas não coincidem.');
+      Alert.alert('Atenção', 'Informe sua senha.');
       return;
     }
 
     try {
       setLoading(true);
 
-      const resultado = await registerUser(
+      const resultado = await loginUser(
         emailTratado,
         senha
       );
 
       if (!resultado.success) {
-        Alert.alert('Erro no cadastro', resultado.message);
+        Alert.alert('Erro no login', resultado.message);
         return;
       }
 
-      Alert.alert(
-        'Cadastro realizado!',
-        'Sua conta foi criada com sucesso.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login'),
-          },
-        ]
-      );
+      /*
+       * Por enquanto vamos apenas navegar para Home.
+       * A proteção real das rotas será implementada
+       * na FASE 5.
+       */
+      navigation.replace('Home');
     } catch (error) {
       Alert.alert(
         'Erro',
-        'Não foi possível realizar o cadastro.'
+        'Não foi possível realizar o login.'
       );
     } finally {
       setLoading(false);
@@ -114,22 +83,11 @@ export default function CadastroScreen({ navigation }) {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.card}>
-          <Text style={styles.title}>Criar conta</Text>
+          <Text style={styles.title}>Pet Care</Text>
 
           <Text style={styles.subtitle}>
-            Cadastre-se para acessar o Pet Care
+            Entre na sua conta
           </Text>
-
-          <Text style={styles.label}>Nome</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu nome"
-            value={nome}
-            onChangeText={setNome}
-            autoCapitalize="words"
-            editable={!loading}
-          />
 
           <Text style={styles.label}>E-mail</Text>
 
@@ -155,40 +113,40 @@ export default function CadastroScreen({ navigation }) {
             editable={!loading}
           />
 
-          <Text style={styles.label}>Confirmar senha</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua senha novamente"
-            value={confirmarSenha}
-            onChangeText={setConfirmarSenha}
-            secureTextEntry
-            editable={!loading}
-          />
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('EsqueciSenha')
+            }
+            disabled={loading}
+          >
+            <Text style={styles.forgotPassword}>
+              Esqueci minha senha
+            </Text>
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={[
               styles.button,
               loading && styles.buttonDisabled,
             ]}
-            onPress={handleCadastro}
+            onPress={handleLogin}
             disabled={loading}
           >
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={styles.buttonText}>
-                Criar conta
+                Entrar
               </Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('Cadastro')}
             disabled={loading}
           >
-            <Text style={styles.loginText}>
-              Já possui uma conta? Entrar
+            <Text style={styles.registerText}>
+              Não possui uma conta? Criar conta
             </Text>
           </TouchableOpacity>
         </View>
@@ -217,7 +175,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
@@ -247,6 +205,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 
+  forgotPassword: {
+    textAlign: 'right',
+    color: '#2563eb',
+    marginTop: 12,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+
   button: {
     height: 50,
     backgroundColor: '#2563eb',
@@ -266,7 +232,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  loginText: {
+  registerText: {
     textAlign: 'center',
     marginTop: 20,
     color: '#2563eb',
