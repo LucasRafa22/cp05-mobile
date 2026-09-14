@@ -1,45 +1,38 @@
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import LoginScreen from '../screens/LoginScreen';
 import CadastroScreen from '../screens/CadastroScreen';
 import EsqueciSenhaScreen from '../screens/EsqueciSenhaScreen';
-import PerfilScreen from '../screens/PerfilScreen';
-import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function StackRoutes() {
+export default function AuthStack() {
   return (
     <Stack.Navigator initialRouteName="Login">
 
       <Stack.Screen
         name="Login"
         component={LoginScreen}
-        options={{ title: 'Login' }}
+        options={{
+          title: 'Login',
+        }}
       />
 
       <Stack.Screen
         name="Cadastro"
         component={CadastroScreen}
-        options={{ title: 'Criar conta' }}
+        options={{
+          title: 'Criar conta',
+        }}
       />
 
       <Stack.Screen
         name="EsqueciSenha"
         component={EsqueciSenhaScreen}
-        options={{ title: 'Recuperar senha' }}
-      />
-
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: 'Home' }}
-      />
-
-      <Stack.Screen
-        name="Perfil"
-        component={PerfilScreen}
-        options={{ title: 'Meu Perfil' }}
+        options={{
+          title: 'Recuperar senha',
+        }}
       />
 
     </Stack.Navigator>

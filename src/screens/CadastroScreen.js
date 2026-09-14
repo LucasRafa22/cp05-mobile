@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+
 import {
   View,
   Text,
@@ -12,186 +13,225 @@ import {
   ScrollView,
 } from 'react-native';
 
-import {
-  registerUser,
-} from '../services/authService';
+import { registerUser } from '../services/authService';
 
 export default function CadastroScreen({ navigation }) {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
-
   const [loading, setLoading] = useState(false);
 
-  function validarEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  }
-
-  async function handleCadastro() {
+  const handleCadastro = async () => {
     const nomeTratado = nome.trim();
-    const emailTratado = email.trim().toLowerCase();
+    const emailTratado = email.trim();
 
+    // Nome
     if (!nomeTratado) {
-      Alert.alert('Atenção', 'Informe seu nome.');
+      Alert.alert(
+        'Atenção',
+        'Digite seu nome.'
+      );
       return;
     }
 
+    // E-mail
     if (!emailTratado) {
-      Alert.alert('Atenção', 'Informe seu e-mail.');
+      Alert.alert(
+        'Atenção',
+        'Digite seu e-mail.'
+      );
       return;
     }
 
-    if (!validarEmail(emailTratado)) {
-      Alert.alert('Atenção', 'Digite um e-mail válido.');
+    // Validação do e-mail
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailValido.test(emailTratado)) {
+      Alert.alert(
+        'E-mail inválido',
+        'Digite um e-mail válido.'
+      );
       return;
     }
 
+    // Senha
     if (!senha) {
-      Alert.alert('Atenção', 'Informe uma senha.');
+      Alert.alert(
+        'Atenção',
+        'Digite uma senha.'
+      );
       return;
     }
 
     if (senha.length < 6) {
       Alert.alert(
-        'Atenção',
+        'Senha inválida',
         'A senha deve ter pelo menos 6 caracteres.'
       );
       return;
     }
 
+    // Confirmação da senha
     if (!confirmarSenha) {
-      Alert.alert('Atenção', 'Confirme sua senha.');
+      Alert.alert(
+        'Atenção',
+        'Confirme sua senha.'
+      );
       return;
     }
 
     if (senha !== confirmarSenha) {
-      Alert.alert('Atenção', 'As senhas não coincidem.');
+      Alert.alert(
+        'Senhas diferentes',
+        'A senha e a confirmação precisam ser iguais.'
+      );
       return;
     }
 
-    try {
-      setLoading(true);
+    setLoading(true);
 
-      const resultado = await registerUser(
-        emailTratado,
-        senha
-      );
+    const result = await registerUser(
+      emailTratado,
+      senha
+    );
 
-      if (!resultado.success) {
-        Alert.alert('Erro no cadastro', resultado.message);
-        return;
-      }
+    setLoading(false);
 
+    if (!result.success) {
       Alert.alert(
-        'Cadastro realizado!',
-        'Sua conta foi criada com sucesso.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login'),
-          },
-        ]
+        'Erro no cadastro',
+        result.message
       );
-    } catch (error) {
-      Alert.alert(
-        'Erro',
-        'Não foi possível realizar o cadastro.'
-      );
-    } finally {
-      setLoading(false);
+      return;
     }
-  }
+
+    /*
+      IMPORTANTE:
+
+      Não usamos navigation.navigate('Login') aqui.
+
+      O Firebase autentica o usuário automaticamente
+      após o cadastro.
+
+      O onAuthStateChanged() do App.js detecta isso
+      e o StackRoutes muda automaticamente para
+      a área autenticada.
+    */
+
+    Alert.alert(
+      'Cadastro realizado!',
+      'Sua conta foi criada com sucesso.',
+      [
+        {
+          text: 'OK',
+        },
+      ]
+    );
+  };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={
+        Platform.OS === 'ios'
+          ? 'padding'
+          : undefined
+      }
     >
       <ScrollView
-        contentContainerStyle={styles.scrollContainer}
+        contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.card}>
-          <Text style={styles.title}>Criar conta</Text>
 
-          <Text style={styles.subtitle}>
-            Cadastre-se para acessar o Pet Care
-          </Text>
+        <Text style={styles.title}>
+          Criar conta
+        </Text>
 
-          <Text style={styles.label}>Nome</Text>
+        <Text style={styles.subtitle}>
+          Cadastre-se no Pet Care
+        </Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu nome"
-            value={nome}
-            onChangeText={setNome}
-            autoCapitalize="words"
-            editable={!loading}
-          />
+        <Text style={styles.label}>
+          Nome
+        </Text>
 
-          <Text style={styles.label}>E-mail</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Digite seu nome"
+          value={nome}
+          onChangeText={setNome}
+          editable={!loading}
+        />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Digite seu e-mail"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={!loading}
-          />
+        <Text style={styles.label}>
+          E-mail
+        </Text>
 
-          <Text style={styles.label}>Senha</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Digite seu e-mail"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+          editable={!loading}
+        />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua senha"
-            value={senha}
-            onChangeText={setSenha}
-            secureTextEntry
-            editable={!loading}
-          />
+        <Text style={styles.label}>
+          Senha
+        </Text>
 
-          <Text style={styles.label}>Confirmar senha</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Digite sua senha"
+          value={senha}
+          onChangeText={setSenha}
+          secureTextEntry
+          editable={!loading}
+        />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Digite sua senha novamente"
-            value={confirmarSenha}
-            onChangeText={setConfirmarSenha}
-            secureTextEntry
-            editable={!loading}
-          />
+        <Text style={styles.label}>
+          Confirmar senha
+        </Text>
 
-          <TouchableOpacity
-            style={[
-              styles.button,
-              loading && styles.buttonDisabled,
-            ]}
-            onPress={handleCadastro}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>
-                Criar conta
-              </Text>
-            )}
-          </TouchableOpacity>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirme sua senha"
+          value={confirmarSenha}
+          onChangeText={setConfirmarSenha}
+          secureTextEntry
+          editable={!loading}
+        />
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
-            disabled={loading}
-          >
-            <Text style={styles.loginText}>
-              Já possui uma conta? Entrar
+        <TouchableOpacity
+          style={[
+            styles.button,
+            loading && styles.buttonDisabled,
+          ]}
+          onPress={handleCadastro}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>
+              Criar conta
             </Text>
-          </TouchableOpacity>
-        </View>
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.linkButton}
+          onPress={() => navigation.navigate('Login')}
+          disabled={loading}
+        >
+          <Text style={styles.linkText}>
+            Já tenho uma conta
+          </Text>
+        </TouchableOpacity>
+
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -200,77 +240,72 @@ export default function CadastroScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
   },
 
-  scrollContainer: {
+  content: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: 20,
-  },
-
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 24,
-    elevation: 4,
+    paddingHorizontal: 25,
+    paddingVertical: 30,
   },
 
   title: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
   },
 
   subtitle: {
-    fontSize: 15,
+    fontSize: 17,
     color: '#666',
     textAlign: 'center',
-    marginBottom: 25,
+    marginBottom: 30,
   },
 
   label: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '600',
-    marginBottom: 6,
-    marginTop: 10,
+    marginBottom: 8,
   },
 
   input: {
-    height: 50,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
     paddingHorizontal: 15,
+    paddingVertical: 13,
     fontSize: 16,
-    backgroundColor: '#fff',
+    marginBottom: 18,
   },
 
   button: {
-    height: 50,
-    backgroundColor: '#2563eb',
+    backgroundColor: '#007AFF',
     borderRadius: 10,
-    justifyContent: 'center',
+    paddingVertical: 15,
     alignItems: 'center',
-    marginTop: 25,
+    marginTop: 5,
   },
 
   buttonDisabled: {
-    opacity: 0.7,
+    opacity: 0.6,
   },
 
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
   },
 
-  loginText: {
-    textAlign: 'center',
+  linkButton: {
+    alignItems: 'center',
     marginTop: 20,
-    color: '#2563eb',
-    fontSize: 15,
+  },
+
+  linkText: {
+    color: '#007AFF',
+    fontSize: 16,
     fontWeight: '600',
   },
 });

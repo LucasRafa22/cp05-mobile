@@ -1,11 +1,11 @@
 import { NavigationContainer } from '@react-navigation/native';
-import StackRoutes from './src/routes/stack.routes';
-import './src/config/firebase';
+
+import AppNavigation from './src/navigation/AppNavigation';
 
 export default function App() {
   return (
     <NavigationContainer>
-      <StackRoutes />
+      <AppNavigation />
     </NavigationContainer>
   );
 }
