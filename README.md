@@ -383,4 +383,4 @@ Durante o vídeo serão demonstrados os principais fluxos do aplicativo:
 
 ## 🔗 Link do vídeo
 
-Link: 
+Link: https://www.youtube.com/shorts/2Eyjkmc_B_s
