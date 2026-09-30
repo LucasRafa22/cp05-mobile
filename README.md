@@ -1,28 +1,46 @@
-# 🐾 Pet Care — CP4
+# 🐾 Pet Care — CP5
 
-Aplicativo mobile desenvolvido em React Native com integração ao Firebase Authentication, permitindo o cadastro, login e gerenciamento básico da conta do usuário.
+Aplicativo mobile desenvolvido em **React Native** com **Firebase Authentication**, **Cloud Firestore** e **AsyncStorage**, com o objetivo de permitir que usuários cadastrem e gerenciem seus pets de forma segura.
+
+O projeto é uma evolução do CP4, mantendo o sistema de autenticação e adicionando persistência de dados no **Cloud Firestore**, com operações completas de **CRUD (Create, Read, Update e Delete)**.
 
 ---
 
 ## 👥 Integrantes
 
-- Aluno: Lucas Rafael Solimene / RM: 565194
+* Nome: Lucas Rafael Solimene
+* RM: 565194
 
 ---
 
-## 📱 Descrição do Projeto
+## 📌 Tema do Projeto
 
-O **Pet Care** é um aplicativo mobile desenvolvido para aplicar os conceitos de autenticação e gerenciamento de sessão utilizando React Native.
+**Pet Care — Gerenciamento de Pets**
 
-O projeto permite que o usuário crie uma conta, realize login, mantenha sua sessão ativa mesmo após fechar e abrir novamente o aplicativo, recupere sua senha, faça logout e exclua sua conta.
+O aplicativo foi desenvolvido para facilitar o gerenciamento das informações dos animais de estimação cadastrados pelo usuário.
 
-A autenticação é realizada utilizando o **Firebase Authentication**, enquanto o **AsyncStorage** é utilizado para manter a persistência da sessão localmente.
+Cada usuário possui seus próprios registros de pets e pode:
 
-O aplicativo possui uma área não autenticada e uma área protegida para usuários autenticados.
+* Criar novos pets;
+* Visualizar seus pets;
+* Editar informações;
+* Excluir pets;
+* Gerenciar sua conta;
+* Fazer login e logout;
+* Recuperar a senha;
+* Excluir a própria conta.
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## 🎯 Objetivo
+
+O objetivo do projeto é desenvolver uma aplicação mobile funcional utilizando serviços Firebase para autenticação e armazenamento de dados.
+
+A aplicação permite que cada usuário tenha seus próprios registros no Firestore, garantindo que os dados de um usuário não sejam exibidos ou modificados por outro usuário.
+
+---
+
+# 🛠️ Tecnologias utilizadas
 
 ### React Native
 
@@ -32,355 +50,469 @@ Framework utilizado para o desenvolvimento da aplicação mobile.
 
 Utilizado para:
 
-- Cadastro de usuários;
-- Login;
-- Autenticação por e-mail e senha;
-- Recuperação de senha;
-- Logout;
-- Exclusão da conta.
+* Cadastro de usuários;
+* Login;
+* Logout;
+* Recuperação de senha;
+* Exclusão de conta;
+* Controle do usuário autenticado.
+
+### Cloud Firestore
+
+Banco de dados utilizado para armazenar as informações dos pets.
+
+O Firestore realiza as operações de:
+
+* Create;
+* Read;
+* Update;
+* Delete.
 
 ### AsyncStorage
 
-Utilizado para a persistência local da sessão de autenticação.
+Utilizado juntamente com a persistência do Firebase Authentication para manter a sessão do usuário mesmo após fechar e abrir o aplicativo.
 
-O aplicativo não armazena a senha do usuário no AsyncStorage.
+### Expo
 
-### React Navigation
-
-Utilizado para controlar a navegação entre as telas e separar a área autenticada da área não autenticada.
-
-### JavaScript
-
-Linguagem utilizada no desenvolvimento da aplicação.
+Utilizado para facilitar o desenvolvimento e execução do aplicativo React Native.
 
 ---
 
-## 📂 Estrutura do Projeto
+# 🔐 Autenticação
 
-```text
-src/
-│
-├── config/
-│   └── firebase.js
-│
-├── navigation/
-│   ├── AppNavigation.js
-│   ├── AuthStack.js
-│   └── UserStack.js
-│
-├── screens/
-│   ├── LoginScreen.js
-│   ├── CadastroScreen.js
-│   ├── EsqueciSenhaScreen.js
-│   ├── HomeScreen.js
-│   └── PerfilScreen.js
-│
-└── services/
-    └── authService.js
-```
+O aplicativo possui uma área pública e uma área protegida.
 
----
+## Área não autenticada
 
-## 🔐 Autenticação
+O usuário pode acessar:
 
-O aplicativo possui duas áreas principais.
+* Login;
+* Cadastro;
+* Recuperação de senha.
 
-Área não autenticada
+## Área autenticada
 
-Disponível para usuários que ainda não realizaram login:
+Depois do login, o usuário pode acessar:
 
-- Login
-- Cadastro
-- Esqueci minha senha
-- Área autenticada
+* Home;
+* Meu Perfil;
+* Cadastro de Pet;
+* Meus Pets;
+* Edição de Pet.
 
-Disponível somente para usuários autenticados:
-
-- Home
-- Minha Conta / Perfil
-
-A navegação é controlada pelo estado de autenticação do Firebase.
-
-Usuários não autenticados não conseguem acessar diretamente as telas da área autenticada.
+A navegação é protegida através do estado de autenticação do Firebase.
 
 ---
 
-## ✨ Funcionalidades
+# 🐶 CRUD de Pets
 
-### 📝 Cadastro
+O aplicativo possui um CRUD completo para gerenciamento dos pets.
 
-O usuário pode criar uma nova conta informando:
+## CREATE — Cadastro
 
-- Nome;
-- E-mail;
-- Senha;
-- Confirmação de senha.
+O usuário pode cadastrar um pet informando:
 
-São realizadas validações para verificar:
+* Nome;
+* Espécie;
+* Raça;
+* Idade.
 
-- Campos obrigatórios;
-- Formato válido do e-mail;
-- Senha preenchida;
-- Senha com pelo menos 6 caracteres;
-- Confirmação da senha;
-- Correspondência entre senha e confirmação.
+Os campos possuem validação básica antes do envio.
 
-Após o cadastro, o usuário é autenticado pelo Firebase e direcionado para a área autenticada.
+Após o cadastro, os dados são armazenados no Cloud Firestore.
 
-### 🔑 Login
+---
 
-O usuário pode acessar sua conta utilizando:
+## READ — Listagem
 
-- E-mail;
-- Senha.
+A tela **Meus Pets** consulta os registros diretamente no Firestore e apresenta os pets cadastrados pelo usuário.
 
-O aplicativo apresenta mensagens de erro caso as credenciais sejam inválidas ou ocorra algum problema durante a autenticação.
+São exibidas informações como:
 
-Após o login realizado com sucesso, o usuário é direcionado automaticamente para a Home.
+* Nome;
+* Espécie;
+* Raça;
+* Idade.
 
-### 💾 Persistência da sessão
+Quando não existem pets cadastrados, o aplicativo apresenta uma mensagem informando que nenhum pet foi cadastrado.
 
-A sessão do usuário é mantida utilizando o Firebase Authentication com persistência através do AsyncStorage.
+---
 
-Dessa forma, quando o aplicativo é fechado e aberto novamente, o sistema verifica a sessão existente.
+## UPDATE — Edição
 
-Se o usuário ainda estiver autenticado, ele permanece na área autenticada.
+O usuário pode selecionar um pet e editar suas informações.
 
-### 🔄 Recuperação de senha
+Após salvar:
 
-Na tela de Login existe a opção:
+1. Os dados são atualizados no Firestore;
+2. Uma mensagem de sucesso é apresentada;
+3. A lista de pets é atualizada.
 
-"Esqueci minha senha"
+---
 
-O usuário informa seu e-mail e o aplicativo utiliza o recurso de recuperação de senha do Firebase Authentication.
+## DELETE — Exclusão
 
-Após a solicitação, o aplicativo apresenta uma mensagem informando o resultado da operação.
-
-### 👤 Minha Conta / Perfil
-
-A tela de Perfil apresenta informações básicas do usuário:
-
-- Nome;
-- E-mail.
-
-Também estão disponíveis as opções:
-
-- Sair da conta;
-- Excluir conta.
-
-### 🚪 Logout
-
-O usuário pode sair da sua conta através do botão "Sair da conta".
-
-Antes de realizar o logout, o aplicativo solicita uma confirmação.
-
-Após a confirmação:
-
-- A sessão do Firebase é encerrada;
-- A persistência da autenticação deixa de manter o usuário conectado;
-- O estado de autenticação é atualizado;
-- O usuário retorna automaticamente para a tela de Login.
-
-
-### 🗑️ Exclusão da conta
-
-O usuário autenticado pode excluir sua conta através do Perfil.
+O usuário pode excluir um pet.
 
 Antes da exclusão, o aplicativo apresenta uma confirmação.
 
-Após a confirmação:
+Após confirmar:
 
-- A conta é excluída do Firebase Authentication;
-- A sessão do usuário é encerrada;
-- O usuário retorna para a área não autenticada;
-- O usuário não consegue realizar login novamente com a conta excluída.
-
-### 🎨 Interface
-
-O aplicativo possui uma interface simples e organizada, priorizando a funcionalidade e a usabilidade.
-
-Foram utilizados:
-
-- Campos identificados;
-- Botões claros;
-- Mensagens de erro;
-- Mensagens de sucesso;
-- Indicadores de carregamento;
-- Confirmações para ações importantes;
-- Navegação coerente;
-- ScrollView para telas com formulário;
-- KeyboardAvoidingView para melhorar a utilização em dispositivos mobile.
+1. O registro é removido do Firestore;
+2. O pet desaparece da lista;
+3. Uma mensagem de sucesso é apresentada.
 
 ---
 
-## 📦 Instalação
+# 🗄️ Estrutura do Firestore
 
-1. Clonar o repositório
+Os dados dos pets são organizados por usuário autenticado.
 
-```bash
-git clone URL_DO_REPOSITORIO
+A estrutura utilizada é:
+
+```text
+usuarios
+└── {uid}
+    └── pets
+        ├── {petId}
+        │   ├── nome
+        │   ├── especie
+        │   ├── raca
+        │   └── idade
+        │
+        └── {petId}
+            ├── nome
+            ├── especie
+            ├── raca
+            └── idade
 ```
 
-2. Acessar a pasta do projeto
+O `{uid}` representa o identificador único do usuário autenticado no Firebase Authentication.
 
-```bash
-cd NOME_DO_PROJETO
+Dessa forma, cada usuário possui sua própria coleção de pets.
+
+---
+
+# 🔒 Segurança e isolamento dos dados
+
+As regras do Firestore foram configuradas para permitir acesso somente ao usuário autenticado que é proprietário dos dados.
+
+A aplicação utiliza o seguinte conceito:
+
+```text
+Usuário autenticado
+        ↓
+Firebase Authentication
+        ↓
+UID do usuário
+        ↓
+usuarios/{uid}/pets
 ```
 
-3. Instalar as dependências
+As regras verificam se:
+
+```text
+request.auth.uid == userId
+```
+
+Assim:
+
+* Um usuário pode visualizar seus próprios pets;
+* Um usuário pode criar seus próprios pets;
+* Um usuário pode editar seus próprios pets;
+* Um usuário pode excluir seus próprios pets;
+* Um usuário não pode acessar os pets de outro usuário.
+
+---
+
+# 📱 Telas da aplicação
+
+## 🔑 Login
+
+Permite que o usuário informe:
+
+* E-mail;
+* Senha.
+
+Também possui acesso para:
+
+* Criar uma conta;
+* Recuperar senha.
+
+---
+
+## 📝 Cadastro
+
+Permite criar uma nova conta informando:
+
+* Nome;
+* E-mail;
+* Senha;
+* Confirmação da senha.
+
+---
+
+## 🔄 Recuperação de senha
+
+Permite informar o e-mail cadastrado para receber a recuperação da senha através do Firebase Authentication.
+
+---
+
+## 🏠 Home
+
+A tela inicial da área autenticada apresenta os principais acessos:
+
+* **Meu Perfil**
+* **Cadastrar Pet**
+* **Meus Pets**
+
+---
+
+## 👤 Meu Perfil
+
+Apresenta os dados do usuário autenticado e disponibiliza:
+
+* Logout;
+* Exclusão da conta.
+
+---
+
+## 🐕 Cadastro de Pet
+
+Permite cadastrar um novo pet com:
+
+* Nome;
+* Espécie;
+* Raça;
+* Idade.
+
+---
+
+## 📋 Meus Pets
+
+Apresenta todos os pets cadastrados pelo usuário.
+
+Cada registro possui as opções:
+
+* Editar;
+* Excluir.
+
+Também existe a opção de cadastrar um novo pet.
+
+---
+
+## ✏️ Editar Pet
+
+Permite alterar:
+
+* Nome;
+* Espécie;
+* Raça;
+* Idade.
+
+---
+
+# 📂 Estrutura do projeto
+
+```text
+cp04-mobile/
+│
+├── assets/
+│
+├── src/
+│   │
+│   ├── config/
+│   │   └── firebase.js
+│   │
+│   ├── navigation/
+│   │   ├── AppNavigation.js
+│   │   ├── AuthStack.js
+│   │   └── UserStack.js
+│   │
+│   ├── screens/
+│   │   ├── LoginScreen.js
+│   │   ├── CadastroScreen.js
+│   │   ├── EsqueciSenhaScreen.js
+│   │   ├── HomeScreen.js
+│   │   ├── PerfilScreen.js
+│   │   ├── CadastroPetScreen.js
+│   │   ├── PetsScreen.js
+│   │   └── EditarPetScreen.js
+│   │
+│   └── services/
+│       ├── authService.js
+│       └── firestoreService.js
+│
+├── App.js
+├── app.json
+├── index.js
+├── package.json
+└── README.md
+```
+
+---
+
+# ⚙️ Instalação
+
+## 1. Clonar o projeto
+
+```bash
+git clone [URL_DO_REPOSITÓRIO]
+```
+
+Entre na pasta do projeto:
+
+```bash
+cd cp05-mobile
+```
+
+---
+
+## 2. Instalar as dependências
+
+Execute:
 
 ```bash
 npm install
 ```
 
-4. Instalar o AsyncStorage
-
-```bash
-npx expo install @react-native-async-storage/async-storage
-```
-
-5. Instalar o Firebase
-
-```bash
-npm install firebase
-```
-
 ---
 
-## 🔥 Configuração do Firebase
+## 3. Configurar o Firebase
 
-Para executar o projeto, é necessário configurar um projeto no Firebase.
+O projeto utiliza:
 
-1. Criar um projeto no Firebase
+* Firebase Authentication;
+* Cloud Firestore.
 
-Acesse o Firebase Console e crie um novo projeto.
-
-2. Ativar o Firebase Authentication
-
-No Firebase:
-
-Authentication
-
-- → Sign-in method
-- → Email/Password
-- → Ativar
-
-3. Criar um aplicativo Web
-
-Adicione um aplicativo Web ao projeto Firebase para obter as configurações necessárias.
-
-4. Configurar o Firebase no projeto
-
-No arquivo:
-
-src/config/firebase.js
-
-informe as configurações do seu projeto Firebase:
+É necessário configurar um projeto no Firebase e utilizar as credenciais correspondentes no arquivo:
 
 ```text
-const firebaseConfig = {
-  apiKey: 'SUA_API_KEY',
-  authDomain: 'SEU_AUTH_DOMAIN',
-  projectId: 'SEU_PROJECT_ID',
-  storageBucket: 'SEU_STORAGE_BUCKET',
-  messagingSenderId: 'SEU_MESSAGING_SENDER_ID',
-  appId: 'SEU_APP_ID',
-};
+src/config/firebase.js
 ```
 
-Não publique credenciais ou informações sensíveis adicionais do seu ambiente no repositório.
+O Authentication deve estar habilitado no Firebase.
+
+Também é necessário habilitar o **Cloud Firestore**.
 
 ---
 
-## ▶️ Execução
+# ▶️ Execução
 
-Após instalar as dependências e configurar o Firebase, execute:
+Para iniciar o projeto utilizando Expo:
 
 ```bash
 npx expo start
 ```
 
-Será exibido o QR Code do Expo.
+Depois disso, é possível executar o aplicativo utilizando:
 
-A aplicação pode ser executada utilizando:
-
-- Expo Go em um dispositivo físico;
-- Emulador Android;
-- Simulador iOS, quando disponível.
+* Expo Go;
+* Emulador Android;
+* Emulador iOS;
+* Dispositivo físico compatível.
 
 ---
 
-## 🧪 Fluxo de utilização
-
-O fluxo principal do aplicativo é:
+# 🔄 Fluxo da aplicação
 
 ```text
-Login
-  │
-  ├── Cadastro
-  │      ↓
-  │   Criar conta
-  │      ↓
-  │   Home
-  │
-  ├── Esqueci minha senha
-  │      ↓
-  │   Recuperação via Firebase
-  │
-  └── Login
-         ↓
-       Home
-         ↓
-       Perfil
-       ├── Sair da conta
-       │      ↓
-       │    Login
-       │
-       └── Excluir conta
+                 ┌──────────────┐
+                 │    Login     │
+                 └──────┬───────┘
+                        │
+              ┌─────────┴─────────┐
+              │                   │
+         Criar conta        Recuperar senha
+              │
               ↓
-            Login
+        Firebase Auth
+              │
+              ↓
+          ┌────────┐
+          │  Home  │
+          └───┬────┘
+              │
+       ┌──────┼─────────────┐
+       │      │             │
+       ↓      ↓             ↓
+    Perfil  Cadastro      Meus Pets
+              Pet            │
+                             │
+                       ┌─────┴─────┐
+                       │           │
+                       ↓           ↓
+                    Editar      Excluir
+                       │           │
+                       └─────┬─────┘
+                             ↓
+                         Firestore
 ```
 
 ---
 
-## 🔒 Proteção das rotas
+# 🧪 Funcionalidades testadas
 
-O aplicativo utiliza uma navegação condicional baseada no estado de autenticação do Firebase.
+O projeto foi desenvolvido e testado considerando:
 
-Usuário não autenticado
+* [x] Cadastro de usuário;
+* [x] Login;
+* [x] Logout;
+* [x] Recuperação de senha;
+* [x] Exclusão de conta;
+* [x] Persistência da sessão;
+* [x] Cadastro de pets;
+* [x] Listagem de pets;
+* [x] Edição de pets;
+* [x] Exclusão de pets;
+* [x] Validação dos campos;
+* [x] Mensagens de sucesso;
+* [x] Mensagens de erro;
+* [x] Loading durante operações;
+* [x] Confirmação antes da exclusão;
+* [x] Isolamento dos dados entre usuários;
+* [x] Regras de segurança do Firestore;
+* [x] Navegação entre as telas.
+
+---
+
+# 🔐 Fluxo de segurança
+
+A aplicação não armazena senhas no Firestore.
+
+A autenticação é realizada pelo **Firebase Authentication**.
+
+Os dados dos pets são associados ao UID do usuário autenticado:
 
 ```text
-AuthStack
-├── Login
-├── Cadastro
-└── EsqueciSenha
+Firebase Authentication
+          │
+          ↓
+        UID
+          │
+          ↓
+usuarios/{uid}/pets
 ```
 
-Usuário autenticado
-
-```text
-UserStack
-├── Home
-└── Perfil
-```
-
-Dessa forma, as telas autenticadas não ficam disponíveis para usuários que não possuem uma sessão ativa.
+As regras do Firestore impedem que um usuário acesse diretamente os registros pertencentes a outro usuário.
 
 ---
 
-## 📹 Vídeo de Apresentação
+# 🎥 Vídeo de apresentação
 
-Durante o vídeo serão demonstrados os principais fluxos do aplicativo:
+**Link do vídeo no YouTube:**
 
-- Criação de uma conta;
-- Login;
-- Fechamento e reabertura do aplicativo demonstrando a persistência da sessão;
-- Logout;
-- Recuperação de senha;
-- Exclusão da conta.
+Link Youtube:
 
----
+No vídeo serão demonstrados:
 
-## 🔗 Link do vídeo
-
-Link: https://www.youtube.com/shorts/2Eyjkmc_B_s
+* Cadastro de usuário;
+* Login;
+* Acesso à Home;
+* Cadastro de pelo menos dois pets;
+* Consulta dos pets no Firestore;
+* Edição de um pet;
+* Exclusão de um pet;
+* Isolamento dos dados entre usuários;
+* Logout;
+* Persistência da sessão.
