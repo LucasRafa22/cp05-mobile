@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from '../screens/HomeScreen';
 import PerfilScreen from '../screens/PerfilScreen';
+import CadastroPetScreen from '../screens/CadastroPetScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,14 @@ export default function UserStack() {
         component={PerfilScreen}
         options={{
           title: 'Meu Perfil',
+        }}
+      />
+
+      <Stack.Screen
+        name="CadastroPet"
+        component={CadastroPetScreen}
+        options={{
+          title: 'Cadastrar Pet',
         }}
       />
 

@@ -6,27 +6,30 @@ import {
   getReactNativePersistence,
 } from 'firebase/auth';
 
+import { getFirestore } from 'firebase/firestore';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDSPfSrlBJwB8fBzqDAyJ1IRW5sjcpVmRc",
-  authDomain: "mobile-cp4-2d654.firebaseapp.com",
-  projectId: "mobile-cp4-2d654",
-  storageBucket: "mobile-cp4-2d654.firebasestorage.app",
-  messagingSenderId: "616408978000",
-  appId: "1:616408978000:web:a4eb495118e70b72f6f755",
-  measurementId: "G-FW7TB4SZES"
+  apiKey: "AIzaSyDsCm88iUxYkSyIVvLOWJZtckyPfoWu590",
+  authDomain: "cp05-mobile.firebaseapp.com",
+  projectId: "cp05-mobile",
+  storageBucket: "cp05-mobile.firebasestorage.app",
+  messagingSenderId: "529560386949",
+  appId: "1:529560386949:web:be2ab1428a12601e8d98ec",
+  measurementId: "G-Q682278N3M"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+// Firebase Authentication
 export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
+
+// Cloud Firestore
+export const db = getFirestore(app);
 
 export default app;

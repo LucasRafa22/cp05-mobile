@@ -28,12 +28,10 @@ export default function HomeScreen({ navigation }) {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() =>
-            navigation.navigate('Perfil')
-          }
+          onPress={() => navigation.navigate('CadastroPet')}
         >
           <Text style={styles.buttonText}>
-            Meu Perfil
+            Cadastrar Pet
           </Text>
         </TouchableOpacity>
       </View>
