@@ -28,10 +28,30 @@ export default function HomeScreen({ navigation }) {
 
         <TouchableOpacity
           style={styles.button}
+          onPress={() =>
+            navigation.navigate('Perfil')
+          }
+        >
+          <Text style={styles.buttonText}>
+            Meu Perfil
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => navigation.navigate('CadastroPet')}
         >
           <Text style={styles.buttonText}>
             Cadastrar Pet
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Pets')}
+        >
+          <Text style={styles.buttonText}>
+            Meus Pets
           </Text>
         </TouchableOpacity>
       </View>
@@ -94,11 +114,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 15,
     paddingHorizontal: 50,
+    marginBottom: 15
   },
 
   buttonText: {
     color: '#fff',
     fontSize: 17,
     fontWeight: 'bold',
-  },
+  }
 });
