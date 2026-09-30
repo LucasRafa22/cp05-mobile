@@ -12,11 +12,15 @@ import {
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { listarPets } from '../services/firestoreService';
+import {
+  listarPets,
+  excluirPet,
+} from '../services/firestoreService';
 
 export default function PetsScreen({ navigation }) {
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
 
   const carregarPets = async () => {
     try {
@@ -40,14 +44,63 @@ export default function PetsScreen({ navigation }) {
     }
   };
 
-  // Carrega novamente toda vez que a tela recebe foco
   useFocusEffect(
     useCallback(() => {
       carregarPets();
     }, [])
   );
 
+  const handleExcluirPet = (pet) => {
+    Alert.alert(
+      'Excluir pet',
+      `Tem certeza que deseja excluir ${pet.nome}?`,
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setDeletingId(pet.id);
+
+              await excluirPet(pet.id);
+
+              // Remove o pet da lista imediatamente
+              setPets((petsAtuais) =>
+                petsAtuais.filter(
+                  (item) => item.id !== pet.id
+                )
+              );
+
+              Alert.alert(
+                'Sucesso!',
+                'Pet excluído com sucesso.'
+              );
+            } catch (error) {
+              console.error(
+                'Erro ao excluir pet:',
+                error
+              );
+
+              Alert.alert(
+                'Erro',
+                'Não foi possível excluir o pet. Tente novamente.'
+              );
+            } finally {
+              setDeletingId(null);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const renderPet = ({ item }) => {
+    const isDeleting = deletingId === item.id;
+
     return (
       <View style={styles.petCard}>
         <Text style={styles.petName}>
@@ -68,15 +121,19 @@ export default function PetsScreen({ navigation }) {
 
         <View style={styles.actions}>
           <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => {
+            style={[
+              styles.editButton,
+              isDeleting && styles.disabledButton,
+            ]}
+            onPress={() =>
               navigation.navigate(
                 'EditarPet',
                 {
                   pet: item,
                 }
-              );
-            }}
+              )
+            }
+            disabled={isDeleting}
           >
             <Text style={styles.actionText}>
               Editar
@@ -84,34 +141,20 @@ export default function PetsScreen({ navigation }) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => {
-              Alert.alert(
-                'Excluir pet',
-                `Deseja excluir ${item.nome}?`,
-                [
-                  {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                  },
-                  {
-                    text: 'Excluir',
-                    style: 'destructive',
-                    onPress: () => {
-                      // Será implementado na FASE 7
-                      Alert.alert(
-                        'Em breve',
-                        'A exclusão será implementada na FASE 7.'
-                      );
-                    },
-                  },
-                ]
-              );
-            }}
+            style={[
+              styles.deleteButton,
+              isDeleting && styles.disabledButton,
+            ]}
+            onPress={() => handleExcluirPet(item)}
+            disabled={isDeleting}
           >
-            <Text style={styles.actionText}>
-              Excluir
-            </Text>
+            {isDeleting ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.actionText}>
+                Excluir
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -259,6 +302,10 @@ const styles = StyleSheet.create({
     paddingVertical: 11,
     borderRadius: 8,
     alignItems: 'center',
+  },
+
+  disabledButton: {
+    opacity: 0.6,
   },
 
   actionText: {
