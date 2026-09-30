@@ -357,7 +357,7 @@ cp04-mobile/
 ## 1. Clonar o projeto
 
 ```bash
-git clone [URL_DO_REPOSITÓRIO]
+git clone https://github.com/LucasRafa22/cp05-mobile.git
 ```
 
 Entre na pasta do projeto:
@@ -502,17 +502,4 @@ As regras do Firestore impedem que um usuário acesse diretamente os registros p
 
 **Link do vídeo no YouTube:**
 
-Link Youtube:
-
-No vídeo serão demonstrados:
-
-* Cadastro de usuário;
-* Login;
-* Acesso à Home;
-* Cadastro de pelo menos dois pets;
-* Consulta dos pets no Firestore;
-* Edição de um pet;
-* Exclusão de um pet;
-* Isolamento dos dados entre usuários;
-* Logout;
-* Persistência da sessão.
+Link Youtube: https://www.youtube.com/shorts/DhvPX2S17pw
